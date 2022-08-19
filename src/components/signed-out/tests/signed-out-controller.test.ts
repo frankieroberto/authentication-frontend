@@ -25,7 +25,7 @@ describe("signed out controller", () => {
       cookies: {
         aps: "123",
         cookies_preferences_set: "abc",
-        lng: "en",
+        lang: "en",
         gs: "xyz",
       },
     });
@@ -43,7 +43,7 @@ describe("signed out controller", () => {
       expect(res.render).to.have.calledWith("signed-out/index.njk");
       expect(res.clearCookie).to.have.calledWith("aps");
       expect(res.clearCookie).not.to.have.calledWith("cookies_preferences_set");
-      expect(res.clearCookie).not.to.have.calledWith("lng");
+      expect(res.clearCookie).not.to.have.calledWith("lang");
       expect(res.clearCookie).to.have.calledWith("gs");
       expect(req.session.destroy).to.have.been.calledOnce;
     });

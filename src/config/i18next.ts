@@ -14,8 +14,8 @@ export function i18nextConfigurationOptions(
       allowMultiLoading: true,
     },
     detection: {
-      lookupCookie: "lng",
-      lookupQuerystring: "lng",
+      lookupCookie: "lang",
+      lookupQuerystring: "lang",
       order: ["querystring", "cookie"],
       caches: ["cookie"],
       ignoreCase: true,
