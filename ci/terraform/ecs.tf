@@ -3,6 +3,7 @@ locals {
   container_name = "frontend-application"
 
   nginx_port       = 8080
+  cwagent_port     = 25888
   application_port = var.basic_auth_password == "" ? var.app_port : local.nginx_port
 
   frontend_container_definition = {
@@ -104,6 +105,10 @@ locals {
         name  = "SERVICE_DOMAIN"
         value = local.service_domain
       },
+      {
+        "name" : "AWS_EMF_AGENT_ENDPOINT",
+        "value" : "tcp://127.0.0.1:25888"
+      }
     ]
   }
 
@@ -156,6 +161,59 @@ locals {
       },
     ]
   }
+
+  #{
+  #"name": "cwagent",
+  #"mountPoints": [],
+  #"image": "public.ecr.aws/cloudwatch-agent/cloudwatch-agent:latest",
+  #"memory": 256,
+  #"cpu": 256,
+  #"portMappings": [{
+  #"protocol": "tcp",
+  #"containerPort": 25888
+  #}],
+  #"environment": [{
+  #"name": "CW_CONFIG_CONTENT",
+  #"valueFrom": "cwagentconfig"
+  #}],
+  #}
+
+  cwagnet_sidecar_container_definition = {
+    name = "cwagent-sidecar"
+    #    image     = "${var.cwagent_sidecar_image_uri}:${var.cwagent_sidecar_image_tag}@${var.cwagent_sidecar_image_digest}"
+    image = "public.ecr.aws/cloudwatch-agent/cloudwatch-agent:latest"
+
+    essential = true
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.ecs_frontend_task_log.name
+        awslogs-region        = var.aws_region
+        awslogs-stream-prefix = local.service_name
+      }
+    }
+    portMappings = [
+      {
+        protocol      = "tcp"
+        containerPort = local.cwagent_port
+    }]
+    environment = [
+      {
+        name      = "CW_CONFIG_CONTENT"
+#        valueFrom = "${var.environment}-frontend-ecs-cwagent-config"
+        value = <<EOF
+{
+  "logs": {
+    "metrics_collected": {
+      "emf": { }
+    }
+  }
+}
+EOF
+      }
+    ]
+  }
+
 }
 
 resource "random_string" "session_secret" {
@@ -206,9 +264,10 @@ resource "aws_ecs_task_definition" "frontend_task_definition" {
   network_mode             = "awsvpc"
   cpu                      = var.frontend_task_definition_cpu
   memory                   = var.frontend_task_definition_memory
-  container_definitions = var.basic_auth_password == "" ? jsonencode([local.frontend_container_definition]) : jsonencode([
+  container_definitions = var.basic_auth_password == "" ? jsonencode([local.frontend_container_definition, local.cwagnet_sidecar_container_definition]) : jsonencode([
     local.frontend_container_definition,
     local.sidecar_container_definition,
+    local.cwagnet_sidecar_container_definition,
   ])
 
   tags = local.default_tags

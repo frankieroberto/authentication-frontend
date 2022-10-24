@@ -126,3 +126,19 @@ resource "aws_iam_policy" "parameter_policy" {
 
   tags = local.default_tags
 }
+
+resource "aws_ssm_parameter" "cwagent_config" {
+  name  = "${var.environment}-frontend-ecs-cwagent-config"
+  type  = "String"
+  value = <<EOF
+{
+  "logs": {
+    "metrics_collected": {
+      "emf": { }
+    }
+  }
+}
+EOF
+
+  tags = local.default_tags
+}

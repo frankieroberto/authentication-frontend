@@ -201,6 +201,15 @@ variable "sidecar_image_tag" {
 variable "sidecar_image_digest" {
   default = ""
 }
+variable "cwagent_sidecar_image_uri" {
+  default = "amazon/cloudwatch-agent"
+}
+variable "cwagent_sidecar_image_tag" {
+  default = "latest"
+}
+variable "cwagent_sidecar_image_digest" {
+  default = "sha256:80d37f8425f783872d68fe0eeb53b93a2e77777928556454f06b9502c5ec9835"
+}
 variable "basic_auth_username" {
   default = ""
 }
