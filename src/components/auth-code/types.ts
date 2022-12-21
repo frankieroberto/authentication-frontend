@@ -9,6 +9,7 @@ export interface AuthCodeServiceInterface {
     sessionId: string,
     clientSessionId: string,
     sourceIp: string,
-    persistentSessionId: string
+    persistentSessionId: string,
+    userLanguage: string
   ) => Promise<ApiResponseResult<AuthCodeResponse>>;
 }

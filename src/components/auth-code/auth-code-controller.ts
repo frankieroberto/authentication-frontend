@@ -7,6 +7,7 @@ import { CookieConsentServiceInterface } from "../common/cookie-consent/types";
 import { cookieConsentService } from "../common/cookie-consent/cookie-consent-service";
 import { sanitize } from "../../utils/strings";
 import { COOKIE_CONSENT } from "../../app.constants";
+import xss from "xss";
 
 export function authCodeGet(
   service: AuthCodeServiceInterface = authCodeService(),
@@ -20,7 +21,8 @@ export function authCodeGet(
       sessionId,
       clientSessionId,
       req.ip,
-      persistentSessionId
+      persistentSessionId,
+      xss(req.cookies.lng as string)
     );
 
     if (!result.success) {

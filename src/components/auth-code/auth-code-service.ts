@@ -14,7 +14,8 @@ export function authCodeService(axios: Http = http): AuthCodeServiceInterface {
     sessionId: string,
     clientSessionId: string,
     sourceIp: string,
-    persistentSessionId: string
+    persistentSessionId: string,
+    userLanguage: string
   ): Promise<ApiResponseResult<AuthCodeResponse>> {
     const response = await axios.client.get(
       API_ENDPOINTS.AUTH_CODE,
@@ -24,6 +25,7 @@ export function authCodeService(axios: Http = http): AuthCodeServiceInterface {
         clientSessionId: clientSessionId,
         sourceIp: sourceIp,
         persistentSessionId: persistentSessionId,
+        userLanguage: userLanguage,
       })
     );
 
