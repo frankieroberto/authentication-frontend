@@ -1,0 +1,52 @@
+name: Build Images
+permissions:
+  id-token: write
+  contents: read
+on:
+  push:
+    branches:
+      - gha
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1 # More information on this action can be found below in the 'AWS Credentials' section
+      with:
+        role-to-assume: arn:aws:iam::114407264696:role/auth-github-deployment
+        aws-region: eu-west-2
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      id: login-ecr
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: frontend-image-repository
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  build-basic-auth-sidecar:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1 # More information on this action can be found below in the 'AWS Credentials' section
+      with:
+        role-to-assume: arn:aws:iam::114407264696:role/auth-github-deployment
+        aws-region: eu-west-2
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      id: login-ecr
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: basic-auth-sidecar-image-repository
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG basic-auth-sidecar
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
