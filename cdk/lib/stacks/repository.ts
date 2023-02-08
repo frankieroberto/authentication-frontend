@@ -40,7 +40,7 @@ export class RepositoryStack extends cdk.Stack {
     const deployRole = new iam.Role(this, 'deployrole', {
       roleName: 'gha-ecr-role',
       assumedBy: new iam.FederatedPrincipal(
-        'token.actions.githubusercontent.com',
+        `arn:aws:iam::${this.account}:oidc-provider/token.actions.githubusercontent.com`,
         {
           StringEquals: {
             'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com'

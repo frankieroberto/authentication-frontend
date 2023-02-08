@@ -14,7 +14,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         role-to-assume: arn:aws:iam::622942135269:role/gha-ecr-role
         aws-region: eu-west-2
@@ -45,7 +45,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         role-to-assume: arn:aws:iam::622942135269:role/gha-ecr-role
         aws-region: eu-west-2
@@ -92,7 +92,8 @@ jobs:
       run: |
         cdk synth ${{ matrix.stack }} --context git_sha=${{ github.sha }} > template.yml
 
-        echo '# ${{ matrix.stack }} template\n\n```yaml' >> $GITHUB_STEP_SUMMARY
+        echo '# ${{ matrix.stack }} template' >> $GITHUB_STEP_SUMMARY
+        echo '```yaml' >> $GITHUB_STEP_SUMMARY
         cat template.yml >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
     - name: Upload ${{ matrix.stack }} template
