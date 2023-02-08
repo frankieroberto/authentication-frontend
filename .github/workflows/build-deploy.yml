@@ -1,0 +1,104 @@
+name: Build and Deploy
+permissions:
+  id-token: write
+  contents: read
+on:
+  push:
+    branches:
+      - cdk
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::622942135269:role/gha-ecr-role
+        aws-region: eu-west-2
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      id: login-ecr
+    - name: Build docker image
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: frontend
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+    - name: Push docker image to Amazon ECR
+      if: ${{ github.event_name == 'push' }}
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: frontend
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  build-basic-auth-sidecar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: basic-auth-sidecar
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::622942135269:role/gha-ecr-role
+        aws-region: eu-west-2
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      id: login-ecr
+    - name: Build docker image
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: basic-auth-sidecar
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+    - name: Push docker image to Amazon ECR
+      if: ${{ github.event_name == 'push' }}
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: basic-auth-sidecar
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  synth:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cdk
+    strategy:
+      matrix:
+        stack:
+        - frontend
+        - frontend-repository
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+    - name: Install dependencies
+      run: npm ci
+    - name: Install aws-cdk globally
+      run: npm i -g aws-cdk
+    - name: Run cdk synth ${{ matrix.stack }}
+      run: |
+        cdk synth ${{ matrix.stack }} --context git_sha=${{ github.sha }} > template.yml
+
+        echo '# ${{ matrix.stack }} template\n\n```yaml' >> $GITHUB_STEP_SUMMARY
+        cat template.yml >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+    - name: Upload ${{ matrix.stack }} template
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.stack }}
+        path: cdk/template.yml
+
+    
