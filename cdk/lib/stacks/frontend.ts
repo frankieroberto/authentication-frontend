@@ -15,9 +15,16 @@ export class FrontendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
+    cdk.Tags.of(this).add('Product', 'GOV.UK One Login')
+    cdk.Tags.of(this).add('Service', 'frontend')
+    cdk.Tags.of(this).add('System', 'authentication')
+
     const environment = new cdk.CfnParameter(this, 'environment', {
       default: 'build'
     }).valueAsString;
+
+
+    cdk.Tags.of(this).add('Environment', environment)
 
     new cdk.CfnCondition(this, 'isProd', {
       expression: cdk.Fn.conditionEquals(environment, 'production')
