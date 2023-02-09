@@ -101,5 +101,33 @@ jobs:
       with:
         name: ${{ matrix.stack }}
         path: cdk/template.yml
-
-    
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: [synth]
+  #   if: ${{ github.event_name == 'push' }}
+  #   strategy:
+  #     matrix:
+  #       stack:
+  #       - frontend
+  #       - frontend-repository
+  #   steps:
+  #   - uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 18.x
+  #       cache: npm
+  #   - run: npm i -g aws-cdk
+  #   - name: Download ${{ matrix.stack }} template
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: ${{ matrix.stack }}
+  #       path: cf-template.yml
+  #   - uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       role-to-assume: ${{ secrets.GH_ACTIONS_ROLE_ARN }}
+  #       aws-region: "eu-west-2"
+  #   - env:
+  #       BUCKET: ${{ secrets.ARTIFACT_BUCKET_NAME }}
+  #     run: |
+  #       zip template.zip cf-template.yaml
+  #       aws s3 cp template.zip "s3://$BUCKET/template.zip" --metadata "repository=$GITHUB_REPOSITORY,commitsha=$GITHUB_SHA"
+  
