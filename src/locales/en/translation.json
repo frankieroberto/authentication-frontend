@@ -488,7 +488,10 @@
         "text1": "We can ",
         "sendCodeLinkText": "send the code again",
         "sendCodeLinkHref": "/resend-code",
-        "text 2": " if the code is not working or you did not receive it."
+        "text 2": " if the code is not working or you did not receive it.",
+        "text3": "If you cannot access the phone number for your GOV.UK One Login, you can securely",
+        "selectNewMfaOptionsLinkText": "change how you get security codes",
+        "selectNewMfaOptionsLinkHref": "/select-new-mfa-options"
       }
     },
     "resendMfaCode": {
@@ -1666,6 +1669,22 @@
       },
       "continueButtonText": "Continue"
     },
+    "selectNewMfaOptions": {
+      "title": "How do you want to get security codes?",
+      "header": "How do you want to get security codes?",
+      "secondFactorRadios": {
+        "hint": "Choose how you'll get security codes when signing into your GOV.UK One Login. This will remove your old phone number or authenticator app from your GOV.UK One Login.",
+        "textMessageText": "Text message",
+        "authAppText": "Authenticator app for smartphone, tablet or computer",
+        "errorMessage": "Select how you want to get security codes"
+      },
+      "authAppDetails": {
+        "summaryText": "What is an authenticator app?",
+        "paragraph1": "An authenticator app creates a security code that helps confirm it’s you when you sign in.",
+        "paragraph2": "You can use an authenticator app on your smartphone, tablet or desktop computer.  Download an authenticator app for your smartphone or tablet from your app store or search online for an authenticator app for your computer."
+      },
+      "continueButtonText": "Continue"
+    },
     "setupAuthenticatorApp": {
       "title": "Set up an authenticator app",
       "header": "Set up an authenticator app",
@@ -1706,6 +1725,12 @@
           "invalidFormat": "Enter the security code using only 6 digits",
           "invalidCode": "The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code"
         }
+      },
+      "details": {
+        "summaryText": "I do not have access to the authenticator app",
+        "text": "You can securely",
+        "linkText": "change how you get security codes",
+        "linkHref": "/select-new-mfa-options"
       }
     },
     "photoId": {

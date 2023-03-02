@@ -77,6 +77,7 @@ import { cookiesRouter } from "./components/common/cookies/cookies-routes";
 import { errorPageRouter } from "./components/common/errors/error-routes";
 import { photoIdRouter } from "./components/photo-id/photo-id-routes";
 import { setInternationalPhoneNumberSupportMiddleware } from "./middleware/set-international-phone-number-support-middleware";
+import { selectNewMFAOptionsRouter } from "./components/select-new-mfa-options/select-new-mfa-options-routes";
 
 const APP_VIEWS = [
   path.join(__dirname, "components"),
@@ -119,6 +120,7 @@ function registerRoutes(app: express.Application) {
   app.use(docCheckingAppCallbackRouter);
   app.use(errorPageRouter);
   app.use(photoIdRouter);
+  app.use(selectNewMFAOptionsRouter);
 }
 
 async function createApp(): Promise<express.Application> {

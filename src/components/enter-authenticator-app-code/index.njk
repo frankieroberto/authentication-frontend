@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% set pageTitleName = 'pages.enterAuthenticatorAppCode.title' | translate %}
 
 {% block content %}
@@ -36,5 +37,17 @@
   }) }}
 
   </form>
+
+  {% set detailsHTML %}
+    <p class="govuk-body">
+      {{ 'pages.enterAuthenticatorAppCode.details.text' | translate }}
+      <a href="">{{ 'pages.enterAuthenticatorAppCode.details.linkText' | translate }}</a>
+    </p>
+  {% endset %}
+
+  {{ govukDetails({
+    summaryText: 'pages.enterAuthenticatorAppCode.details.summaryText' | translate,
+    html: detailsHTML
+  }) }}
 
 {% endblock %}

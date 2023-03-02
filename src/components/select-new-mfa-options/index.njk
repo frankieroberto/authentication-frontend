@@ -1,0 +1,57 @@
+{% extends "common/layout/base.njk" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitleName = 'pages.selectNewMfaOptions.title' | translate %}
+
+{% set authAppDetailsTextHtml %}
+    <p class="govuk-body">{{ 'pages.selectNewMfaOptions.authAppDetails.paragraph1' | translate }}</p>
+    <p class="govuk-body">{{ 'pages.selectNewMfaOptions.authAppDetails.paragraph2' | translate }}</p>
+{% endset %}
+
+{% block content %}
+    {% include "common/errors/errorSummary.njk" %}
+
+    <form action="/select-new-mfa-options" method="post" novalidate>
+
+        <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+
+        {{ govukRadios({
+            name: "selectNewMfaOptions",
+            fieldset: {
+                legend: {
+                    text: 'pages.selectNewMfaOptions.header' | translate,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: {
+                text: 'pages.selectNewMfaOptions.secondFactorRadios.hint' | translate
+            },
+            items: [
+                {
+                    text: 'pages.selectNewMfaOptions.secondFactorRadios.textMessageText' | translate,
+                    value: "SMS"
+                },
+                {
+                    text: 'pages.selectNewMfaOptions.secondFactorRadios.authAppText' | translate,
+                    value: "AUTH_APP"
+                }
+            ]
+        }) }}
+
+        {{ govukDetails({
+            summaryText: 'pages.selectNewMfaOptions.authAppDetails.summaryText' | translate,
+            html: authAppDetailsTextHtml
+        }) }}
+
+        {{ govukButton({
+            "text": 'pages.selectNewMfaOptions.continueButtonText' | translate,
+            "type": "Submit",
+            "preventDoubleClick": true
+        }) }}
+
+    </form>
+
+{% endblock %}
