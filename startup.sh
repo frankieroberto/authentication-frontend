@@ -5,6 +5,9 @@ CLEAN=0
 LOCAL=0
 while getopts "cl" opt; do
   case ${opt} in
+    l)
+        LOCAL=1
+      ;;
     c)
         CLEAN=1
       ;;
@@ -24,5 +27,15 @@ fi
 echo "Stopping frontend services..."
 docker-compose down
 
-echo "Starting frontend service..."
-docker-compose up --build
+if [ $LOCAL == "1" ]; then
+  echo "Starting frontend local service..."
+  docker compose -f "docker-compose.yml" up -d --wait redis di-auth-stub-default di-auth-stub-no-mfa
+  docker stop di-authentication-frontend_di-auth-frontend
+  export $(grep -v '^#' .env | xargs)
+  export REDIS_PORT=6389
+  export REDIS_HOST=localhost
+  yarn install && yarn build && yarn dev
+else
+  echo "Starting frontend service..."
+  docker-compose up -d --build
+fi
