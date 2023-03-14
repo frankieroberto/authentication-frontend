@@ -55,6 +55,7 @@ export interface UserSession {
   featureFlags?: any;
   wrongCodeEnteredLock?: string;
   codeRequestLock?: string;
+  canChangeGetSecurityCodesFromSms?: boolean;
 }
 
 export interface UserSessionClient {

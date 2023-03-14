@@ -50,6 +50,8 @@ const USER_JOURNEY_EVENTS = {
   PHOTO_ID: "PHOTO_ID",
   NO_PHOTO_ID: "NO_PHOTO_ID",
   CHANGE_SECURITY_CODES_REQUESTED: "CHANGE_SECURITY_CODES_REQUESTED",
+  CHANGE_SECURITY_CODES_ALLOWED: "CHANGE_SECURITY_CODES_ALLOWED",
+  CHANGE_SECURITY_CODES_DENIED: "CHANGE_SECURITY_CODES_DENIED",
 };
 
 const authStateMachine = createMachine(
@@ -597,8 +599,21 @@ const authStateMachine = createMachine(
         },
       },
       [PATH_NAMES.CHANGE_SECURITY_CODES]: {
+        on: {
+          [USER_JOURNEY_EVENTS.CHANGE_SECURITY_CODES_ALLOWED]: [
+            PATH_NAMES.CHECK_YOUR_EMAIL,
+          ],
+          [USER_JOURNEY_EVENTS.CHANGE_SECURITY_CODES_DENIED]: [
+            PATH_NAMES.CANNOT_CHANGE_SECURITY_CODES,
+          ],
+        },
         meta: {
           optionalPaths: [PATH_NAMES.CANNOT_CHANGE_SECURITY_CODES],
+        },
+      },
+      [PATH_NAMES.CANNOT_CHANGE_SECURITY_CODES]: {
+        meta: {
+          optionalPaths: [PATH_NAMES.ENTER_MFA],
         },
       },
     },
