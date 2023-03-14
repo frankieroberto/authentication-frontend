@@ -29,8 +29,7 @@ docker-compose down
 
 if [ $LOCAL == "1" ]; then
   echo "Starting frontend local service..."
-  docker compose -f "docker-compose.yml" up -d --wait redis di-auth-stub-default di-auth-stub-no-mfa
-  docker stop di-authentication-frontend_di-auth-frontend
+  docker compose -f "docker-compose.yml" up -d --wait --no-deps redis di-auth-stub-default di-auth-stub-no-mfa
   export $(grep -v '^#' .env | xargs)
   export REDIS_PORT=6389
   export REDIS_HOST=localhost
