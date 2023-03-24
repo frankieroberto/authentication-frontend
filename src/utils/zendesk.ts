@@ -26,7 +26,11 @@ export class ZendeskService implements ZendeskInterface {
       },
     });
 
-    await instance.post("/tickets.json", form);
+    await instance.post("/tickets.json", form).catch((error) => {
+      // console.log(error.response.status, error.response.statusText, error.response.data, error.response.errors);
+      console.log(error.response);
+      throw new Error(error.response.status + " " + error.response.statusText);
+    });
   }
 }
 
