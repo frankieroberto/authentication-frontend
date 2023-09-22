@@ -5,7 +5,7 @@ export function getKnownClaims(): {
 } {
   return {
     client_id: "orchestrationAuth",
-    aud: "UNKNOWN",
+    aud: "https://signin.sandpit.account.gov.uk/",
   };
 }
 

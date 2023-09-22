@@ -38,11 +38,11 @@ locals {
       },
       {
         name  = "API_BASE_URL"
-        value = "https://${local.oidc_api_fqdn}"
+        value = "https://0u0uplp3wl.execute-api.eu-west-2.amazonaws.com/sandpit"
       },
       {
         name  = "FRONTEND_API_BASE_URL"
-        value = "https://${local.frontend_api_fqdn}/"
+        value = "https://y4j1fia8jg.execute-api.eu-west-2.amazonaws.com/sandpit/"
       },
       {
         name  = "API_KEY"
